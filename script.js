@@ -52,19 +52,24 @@ function initBookingSystem() {
     const nextBtn = document.querySelector('.btn-next');
     const submitBtn = document.querySelector('.btn-submit');
     const hotelOptions = document.querySelectorAll('.hotel-option');
+    const bookingTypeOptions = document.querySelectorAll('.booking-type-option');
+    const hoursOptions = document.querySelectorAll('.hours-option');
     const roomOptions = document.querySelectorAll('.room-option');
     const checkinDateInput = document.getElementById('checkin-date');
     const checkoutDateInput = document.getElementById('checkout-date');
+    const clearDatesBtn = document.querySelector('.btn-clear-dates');
+    const hourlyTimeSelection = document.getElementById('hourly-time-selection');
     
     let currentStep = 1;
-    let selectedHotel = null;
+    let selectedHotel = 'bulvar';
+    let selectedBookingType = null;
+    let selectedHours = 1;
     let selectedRoom = 'standard';
+    let thirdPerson = false;
     let checkinDate = null;
     let checkoutDate = null;
-    
-    // Устанавливаем минимальную дату - сегодня
-    const today = new Date().toISOString().split('T')[0];
-    checkinDateInput.min = today;
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
     
     // Инициализация календаря
     initCalendar();
@@ -78,6 +83,37 @@ function initBookingSystem() {
         });
     });
     
+    // Обработчики для выбора типа бронирования
+    bookingTypeOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            bookingTypeOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            selectedBookingType = option.dataset.type;
+            
+            // Показываем/скрываем выбор часов
+            const hoursSelection = document.querySelector('.hours-selection');
+            if (selectedBookingType === 'hourly') {
+                hoursSelection.style.display = 'block';
+                hourlyTimeSelection.style.display = 'block';
+            } else {
+                hoursSelection.style.display = 'none';
+                hourlyTimeSelection.style.display = 'none';
+            }
+            
+            updateRoomPrices();
+        });
+    });
+    
+    // Обработчики для выбора количества часов
+    hoursOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            hoursOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            selectedHours = parseInt(option.dataset.hours);
+            updateRoomPrices();
+        });
+    });
+    
     // Обработчики для выбора типа номера
     roomOptions.forEach(option => {
         option.addEventListener('click', () => {
@@ -87,14 +123,24 @@ function initBookingSystem() {
         });
     });
     
+    // Обработчик для чекбокса третьего человека
+    document.getElementById('third-person').addEventListener('change', function() {
+        thirdPerson = this.checked;
+    });
+    
+    // Обработчик для кнопки очистки дат
+    clearDatesBtn.addEventListener('click', () => {
+        checkinDate = null;
+        checkoutDate = null;
+        checkinDateInput.value = '';
+        checkoutDateInput.value = '';
+        renderCalendar(currentMonth, currentYear);
+    });
+    
     // Обработчики для кнопок навигации
     nextBtn.addEventListener('click', goToNextStep);
     prevBtn.addEventListener('click', goToPrevStep);
     submitBtn.addEventListener('click', submitBooking);
-    
-    // Обработчики для дат
-    checkinDateInput.addEventListener('change', updateDates);
-    checkoutDateInput.addEventListener('change', updateDates);
     
     // Функция перехода к следующему шагу
     function goToNextStep() {
@@ -103,12 +149,27 @@ function initBookingSystem() {
             return;
         }
         
-        if (currentStep === 2 && (!checkinDate || !checkoutDate)) {
+        if (currentStep === 2 && !selectedBookingType) {
+            showError('Пожалуйста, выберите тип бронирования');
+            return;
+        }
+        
+        if (currentStep === 2 && selectedBookingType === 'hourly' && !selectedHours) {
+            showError('Пожалуйста, выберите количество часов');
+            return;
+        }
+        
+        if (currentStep === 2 && !selectedRoom) {
+            showError('Пожалуйста, выберите тип номера');
+            return;
+        }
+        
+        if (currentStep === 3 && (!checkinDate || !checkoutDate)) {
             showError('Пожалуйста, выберите даты заезда и выезда');
             return;
         }
         
-        if (currentStep === 2 && new Date(checkoutDate) <= new Date(checkinDate)) {
+        if (currentStep === 3 && new Date(checkoutDate) <= new Date(checkinDate)) {
             showError('Дата выезда должна быть позже даты заезда');
             return;
         }
@@ -128,8 +189,8 @@ function initBookingSystem() {
         // Обновляем кнопки
         prevBtn.disabled = currentStep === 1;
         
-        if (currentStep === 3) {
-            updateBookingSummary();
+        if (currentStep === 4) {
+            updateSummary();
         }
     }
     
@@ -154,15 +215,19 @@ function initBookingSystem() {
     function updateProgressLine() {
         const progress = (currentStep - 1) / (steps.length - 1) * 100;
         stepLine.style.setProperty('--progress', `${progress}%`);
-    }
-    
-    // Обновление дат
-    function updateDates() {
-        checkinDate = checkinDateInput.value;
-        checkoutDate = checkoutDateInput.value;
         
-        if (checkinDate && checkoutDate) {
-            updateCalendar();
+        // Управление видимостью кнопок
+        if (currentStep === 1) {
+            prevBtn.disabled = true;
+            nextBtn.style.display = 'inline-block';
+            submitBtn.style.display = 'none';
+        } else if (currentStep === steps.length) {
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'inline-block';
+        } else {
+            prevBtn.disabled = false;
+            nextBtn.style.display = 'inline-block';
+            submitBtn.style.display = 'none';
         }
     }
     
@@ -172,10 +237,6 @@ function initBookingSystem() {
         const monthYear = document.querySelector('.calendar-month');
         const prevMonthBtn = document.querySelector('.prev-month');
         const nextMonthBtn = document.querySelector('.next-month');
-        
-        let currentDate = new Date();
-        let currentMonth = currentDate.getMonth();
-        let currentYear = currentDate.getFullYear();
         
         // Удаляем дни месяца (оставляем только заголовки дней недели)
         const weekdays = Array.from(calendarGrid.children).slice(0, 7);
@@ -202,6 +263,25 @@ function initBookingSystem() {
             }
             renderCalendar(currentMonth, currentYear);
         });
+        
+        // Обработчики для выбора дат
+        checkinDateInput.addEventListener('focus', () => {
+            if (checkinDate) {
+                const date = new Date(checkinDate);
+                currentMonth = date.getMonth();
+                currentYear = date.getFullYear();
+                renderCalendar(currentMonth, currentYear);
+            }
+        });
+        
+        checkoutDateInput.addEventListener('focus', () => {
+            if (checkoutDate) {
+                const date = new Date(checkoutDate);
+                currentMonth = date.getMonth();
+                currentYear = date.getFullYear();
+                renderCalendar(currentMonth, currentYear);
+            }
+        });
     }
     
     // Отрисовка календаря
@@ -215,7 +295,8 @@ function initBookingSystem() {
         weekdays.forEach(day => calendarGrid.appendChild(day));
         
         // Устанавливаем название месяца и года
-        const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+        const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", 
+                          "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
         monthYear.textContent = `${monthNames[month]} ${year}`;
         
         // Получаем первый день месяца и количество дней в месяце
@@ -239,24 +320,30 @@ function initBookingSystem() {
             const formattedDay = day < 10 ? `0${day}` : day;
             const formattedMonth = month + 1 < 10 ? `0${month + 1}` : month + 1;
             const dateStr = `${year}-${formattedMonth}-${formattedDay}`;
+            const date = new Date(year, month, day);
             
             // Проверяем, является ли день прошедшим
             const today = new Date();
-            const currentDate = new Date(year, month, day);
-            if (currentDate < today) {
+            today.setHours(0, 0, 0, 0);
+            if (date < today) {
                 dayElement.classList.add('booked');
                 dayElement.title = 'Недоступно';
             }
             
+            // Проверяем, является ли день сегодняшним
+            if (date.toDateString() === today.toDateString()) {
+                dayElement.classList.add('today');
+            }
+            
             // Проверяем, совпадает ли день с выбранными датами
             if (checkinDate && dateStr === checkinDate) {
-                dayElement.classList.add('selected-start');
+                dayElement.classList.add('selected');
             } else if (checkoutDate && dateStr === checkoutDate) {
-                dayElement.classList.add('selected-end');
+                dayElement.classList.add('selected');
             } else if (checkinDate && checkoutDate && 
-                       new Date(dateStr) > new Date(checkinDate) && 
-                       new Date(dateStr) < new Date(checkoutDate)) {
-                dayElement.classList.add('selected-range');
+                       date > new Date(checkinDate) && 
+                       date < new Date(checkoutDate)) {
+                dayElement.classList.add('in-range');
             }
             
             // Обработчик клика по дню
@@ -264,140 +351,148 @@ function initBookingSystem() {
                 if (dayElement.classList.contains('booked')) return;
                 
                 const selectedDate = new Date(year, month, day);
+                const dateStr = `${year}-${formattedMonth}-${formattedDay}`;
                 
                 if (!checkinDate || (checkoutDate && selectedDate >= new Date(checkinDate))) {
                     // Если дата выезда уже выбрана или выбрана дата после заезда, сбрасываем выбор
-                    checkinDateInput.value = dateStr;
+                    checkinDateInput.value = formatDate(dateStr);
                     checkoutDateInput.value = '';
                     checkinDate = dateStr;
                     checkoutDate = null;
-                    
-                    // Обновляем календарь
-                    updateCalendar();
                 } else if (selectedDate > new Date(checkinDate)) {
                     // Выбираем дату выезда
-                    checkoutDateInput.value = dateStr;
+                    checkoutDateInput.value = formatDate(dateStr);
                     checkoutDate = dateStr;
-                    
-                    // Обновляем календарь
-                    updateCalendar();
                 }
+                
+                // Обновляем календарь
+                renderCalendar(currentMonth, currentYear);
             });
             
             calendarGrid.appendChild(dayElement);
         }
     }
     
-    // Обновление календаря
-    function updateCalendar() {
-        const currentDate = checkinDate ? new Date(checkinDate) : new Date();
-        renderCalendar(currentDate.getMonth(), currentDate.getFullYear());
-    }
-    
-    // Обновление сводки бронирования
-    function updateBookingSummary() {
-        // Обновляем изображение отеля
-        const summaryImage = document.querySelector('.summary-image');
-        const selectedHotelOption = document.querySelector(`.hotel-option[data-hotel="${selectedHotel}"]`);
-        if (selectedHotelOption) {
-            const hotelImage = selectedHotelOption.querySelector('.hotel-image');
-            summaryImage.style.backgroundImage = hotelImage.style.backgroundImage;
-        }
-        
-        // Обновляем название отеля
-        const summaryHotelName = document.querySelector('.summary-details h4');
-        if (selectedHotel === 'bulvar') {
-            summaryHotelName.textContent = '"У Капитана" на Нагорном бульваре';
-        } else {
-            summaryHotelName.textContent = '"У Капитана" на Севастопольском проспекте';
-        }
-        
-        // Обновляем даты
-        const summaryDates = document.getElementById('summary-dates');
-        const checkin = formatDate(checkinDate);
-        const checkout = formatDate(checkoutDate);
-        summaryDates.textContent = `${checkin} - ${checkout}`;
-        
-        // Обновляем количество ночей
-        const nights = calculateNights(checkinDate, checkoutDate);
-        document.getElementById('summary-nights').textContent = `${nights} ${getNightWord(nights)}`;
-        
-        // Обновляем тип номера
-        const summaryRoom = document.getElementById('summary-room');
-        const roomNames = {
-            'standard': 'Стандарт',
-            'comfort': 'Комфорт',
-            'junior-suite': 'Полулюкс',
-            'suite': 'Люкс'
-        };
-        summaryRoom.textContent = roomNames[selectedRoom] || 'Стандарт';
-        
-        // Обновляем стоимость
-        const roomPrices = {
-            'standard': selectedHotel === 'bulvar' ? 3500 : 3800,
-            'comfort': 4500,
-            'junior-suite': selectedHotel === 'bulvar' ? 6000 : 6500,
-            'suite': 9000
-        };
-        
-        const pricePerNight = roomPrices[selectedRoom] || 3500;
-        const basePrice = nights * pricePerNight;
-        let discount = 0;
-        
-        // Скидка 10% при бронировании от 3 ночей
-        if (nights >= 3) {
-            discount = basePrice * 0.1;
-        }
-        
-        const total = basePrice - discount;
-        
-        // Обновляем цены в сводке
-        const priceItems = document.querySelectorAll('.price-item');
-        priceItems[0].innerHTML = `<span>${nights} ${getNightWord(nights)} × ${pricePerNight}₽</span><span>${basePrice}₽</span>`;
-        
-        if (discount > 0) {
-            priceItems[1].style.display = 'flex';
-            priceItems[1].innerHTML = `<span>Скидка 10%</span><span>-${discount}₽</span>`;
-        } else {
-            priceItems[1].style.display = 'none';
-        }
-        
-        priceItems[2].innerHTML = `<span>Итого</span><span>${total}₽</span>`;
-    }
-    
-    // Расчет количества ночей
-    function calculateNights(checkin, checkout) {
-        const oneDay = 24 * 60 * 60 * 1000;
-        const firstDate = new Date(checkin);
-        const secondDate = new Date(checkout);
-        return Math.round(Math.abs((firstDate - secondDate) / oneDay));
-    }
-    
-    // Форматирование даты
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const options = { day: 'numeric', month: 'long' };
+    // Форматирование даты для отображения
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
         return date.toLocaleDateString('ru-RU', options);
     }
     
-    // Получение правильной формы слова "ночь"
-    function getNightWord(nights) {
-        const lastDigit = nights % 10;
-        const lastTwoDigits = nights % 100;
+    // Обновление цен в зависимости от типа бронирования
+    function updateRoomPrices() {
+        roomOptions.forEach(option => {
+            const priceElement = option.querySelector('.room-price');
+            const roomType = option.dataset.room;
+            
+            let price = 0;
+            let priceText = '';
+            
+            if (selectedBookingType === 'hourly') {
+                price = parseInt(priceElement.dataset.hourly);
+                priceText = `${price.toLocaleString('ru-RU')}₽/час`;
+            } else if (selectedBookingType === 'night') {
+                price = parseInt(priceElement.dataset.night);
+                priceText = `${price.toLocaleString('ru-RU')}₽/ночь`;
+            } else if (selectedBookingType === 'daily') {
+                price = parseInt(priceElement.dataset.daily);
+                priceText = `${price.toLocaleString('ru-RU')}₽/сутки`;
+            }
+            
+            priceElement.textContent = priceText;
+        });
+    }
+    
+    // Обновление сводки бронирования
+    function updateSummary() {
+        // Обновляем информацию об отеле
+        const summaryHotel = document.getElementById('summary-hotel');
+        if (selectedHotel === 'bulvar') {
+            summaryHotel.textContent = '"У Капитана" на Нагорном бульваре';
+        } else {
+            summaryHotel.textContent = '"У Капитана" на Севастопольском проспекте';
+        }
+        
+        // Обновляем информацию о номере
+        const summaryRoom = document.getElementById('summary-room');
+        const roomNames = {
+            'standard': 'Стандарт (STD)',
+            'delux': 'Делюкс (Delux)',
+            'suite': 'Люкс (Suite)'
+        };
+        summaryRoom.textContent = roomNames[selectedRoom] || 'Стандарт';
+        
+        // Обновляем информацию о периоде
+        const summaryPeriod = document.getElementById('summary-period');
+        const selectedRoomOption = document.querySelector(`.room-option[data-room="${selectedRoom}"]`);
+        let basePrice = 0;
+        let priceDescription = '';
+        
+        if (selectedBookingType === 'hourly') {
+            basePrice = parseInt(selectedRoomOption.querySelector('.room-price').dataset.hourly);
+            priceDescription = `${selectedHours} ${getHourWord(selectedHours)} × ${basePrice.toLocaleString('ru-RU')}₽`;
+            summaryPeriod.textContent = `${selectedHours} ${getHourWord(selectedHours)}`;
+        } else if (selectedBookingType === 'night') {
+            basePrice = parseInt(selectedRoomOption.querySelector('.room-price').dataset.night);
+            priceDescription = `Ночь × ${basePrice.toLocaleString('ru-RU')}₽`;
+            summaryPeriod.textContent = `Ночь (${formatDate(checkinDate)} - ${formatDate(checkoutDate)})`;
+        } else if (selectedBookingType === 'daily') {
+            basePrice = parseInt(selectedRoomOption.querySelector('.room-price').dataset.daily);
+            priceDescription = `Сутки × ${basePrice.toLocaleString('ru-RU')}₽`;
+            summaryPeriod.textContent = `Сутки (${formatDate(checkinDate)} - ${formatDate(checkoutDate)})`;
+        }
+        
+        // Обновляем описание цены
+        document.getElementById('price-description').textContent = priceDescription;
+        document.getElementById('base-price').textContent = `${basePrice.toLocaleString('ru-RU')}₽`;
+        
+        // Обновляем информацию о третьем человеке
+        const thirdPersonElement = document.getElementById('summary-third-person');
+        const thirdPersonPriceElement = document.getElementById('third-person-price');
+        if (thirdPerson) {
+            thirdPersonElement.style.display = 'flex';
+            thirdPersonPriceElement.style.display = 'flex';
+        } else {
+            thirdPersonElement.style.display = 'none';
+            thirdPersonPriceElement.style.display = 'none';
+        }
+        
+        // Рассчитываем итоговую цену
+        let totalPrice = basePrice;
+        if (thirdPerson) totalPrice += 1000;
+        
+        // Применяем правило "более 4 часов - оплата по тарифу суток"
+        if (selectedBookingType === 'hourly' && selectedHours >= 4) {
+            const dailyPrice = parseInt(selectedRoomOption.querySelector('.room-price').dataset.daily);
+            totalPrice = dailyPrice;
+            if (thirdPerson) totalPrice += 1000;
+            
+            document.getElementById('price-description').textContent = `4+ часов = сутки × ${dailyPrice.toLocaleString('ru-RU')}₽`;
+            document.getElementById('base-price').textContent = `${dailyPrice.toLocaleString('ru-RU')}₽`;
+        }
+        
+        document.getElementById('summary-total').textContent = `${totalPrice.toLocaleString('ru-RU')}₽`;
+    }
+    
+    // Получение правильной формы слова "час"
+    function getHourWord(hours) {
+        const lastDigit = hours % 10;
+        const lastTwoDigits = hours % 100;
         
         if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
-            return 'ночей';
+            return 'часов';
         }
         
         if (lastDigit === 1) {
-            return 'ночь';
+            return 'час';
         }
         
         if (lastDigit >= 2 && lastDigit <= 4) {
-            return 'ночи';
+            return 'часа';
         }
         
-        return 'ночей';
+        return 'часов';
     }
     
     // Отправка формы бронирования
@@ -414,19 +509,21 @@ function initBookingSystem() {
             return;
         }
         
-        // Здесь должна быть логика отправки данных на сервер
-        // Временно используем alert для демонстрации
-        
+        // Формируем данные бронирования
         const bookingData = {
             hotel: selectedHotel === 'bulvar' ? 
                 '"У Капитана" на Нагорном бульваре' : 
                 '"У Капитана" на Севастопольском проспекте',
             roomType: selectedRoom,
+            bookingType: selectedBookingType,
+            hours: selectedBookingType === 'hourly' ? selectedHours : null,
             checkinDate: checkinDate,
             checkoutDate: checkoutDate,
+            thirdPerson: thirdPerson,
             guestName: guestName,
             guestPhone: guestPhone,
-            guestEmail: guestEmail
+            guestEmail: guestEmail,
+            totalPrice: document.getElementById('summary-total').textContent
         };
         
         console.log('Данные бронирования:', bookingData);
@@ -442,13 +539,23 @@ function initBookingSystem() {
     function resetBookingForm() {
         bookingForm.reset();
         hotelOptions.forEach(opt => opt.classList.remove('selected'));
+        bookingTypeOptions.forEach(opt => opt.classList.remove('active'));
+        hoursOptions.forEach(opt => opt.classList.remove('active'));
         roomOptions.forEach(opt => opt.classList.remove('selected'));
-        checkinDateInput.value = '';
-        checkoutDateInput.value = '';
+        
+        // Выбираем первый отель по умолчанию
+        document.querySelector('.hotel-option[data-hotel="bulvar"]').classList.add('selected');
+        selectedHotel = 'bulvar';
+        
+        // Сбрасываем остальные значения
+        selectedBookingType = null;
+        selectedHours = 1;
+        selectedRoom = 'standard';
+        thirdPerson = false;
         checkinDate = null;
         checkoutDate = null;
-        selectedHotel = null;
-        selectedRoom = 'standard';
+        checkinDateInput.value = '';
+        checkoutDateInput.value = '';
         
         // Возвращаемся к первому шагу
         steps.forEach(step => step.classList.remove('active'));
@@ -460,7 +567,10 @@ function initBookingSystem() {
         prevBtn.disabled = true;
         
         // Обновляем календарь
-        updateCalendar();
+        const today = new Date();
+        currentMonth = today.getMonth();
+        currentYear = today.getFullYear();
+        renderCalendar(currentMonth, currentYear);
     }
     
     // Показ ошибки
@@ -468,9 +578,6 @@ function initBookingSystem() {
         // Здесь можно реализовать красивый вывод ошибок
         alert(message);
     }
-    
-    // Инициализация прогресса
-    updateProgressLine();
 }
 
 // ==================== Индикатор навигации в шапке ====================

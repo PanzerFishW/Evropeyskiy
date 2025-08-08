@@ -63,15 +63,7 @@
                         <span>Забронировать номер</span>
                         <i class="fas fa-calendar-check"></i>
                     </a>
-                    <a href="#rooms" class="btn btn-outline">
-                        <span>Посмотреть номера</span>
-                        <i class="fas fa-bed"></i>
-                    </a>
                 </div>
-            </div>
-            <div class="hero-scroll-hint">
-                <div class="scroll-circle"></div>
-                <span>Листайте вниз</span>
             </div>
         </div>
         
@@ -80,6 +72,7 @@
     </section>
 
 
+    <!-- Обновленная секция бронирования -->
     <section id="booking" class="section">
         <div class="container">
             <h2 class="section-title">Бронирование номеров</h2>
@@ -94,10 +87,14 @@
                         </div>
                         <div class="step-indicator" data-step="2">
                             <div class="step-number">2</div>
-                            <div class="step-title">Даты проживания</div>
+                            <div class="step-title">Тип бронирования</div>
                         </div>
                         <div class="step-indicator" data-step="3">
                             <div class="step-number">3</div>
+                            <div class="step-title">Даты</div>
+                        </div>
+                        <div class="step-indicator" data-step="4">
+                            <div class="step-number">4</div>
                             <div class="step-title">Подтверждение</div>
                         </div>
                         <div class="step-line"></div>
@@ -116,7 +113,7 @@
                                             <span><i class="fas fa-map-marker-alt"></i> 5 мин до метро</span>
                                             <span><i class="fas fa-star"></i> 4.8/5</span>
                                         </div>
-                                        <div class="price-range">от 3 500₽/ночь</div>
+                                        <div class="price-range">от 1 500₽/час</div>
                                     </div>
                                     <div class="selection-badge">
                                         <i class="fas fa-check"></i>
@@ -131,7 +128,7 @@
                                             <span><i class="fas fa-map-marker-alt"></i> 7 мин до метро</span>
                                             <span><i class="fas fa-star"></i> 4.7/5</span>
                                         </div>
-                                        <div class="price-range">от 3 800₽/ночь</div>
+                                        <div class="price-range">от 1 500₽/час</div>
                                     </div>
                                     <div class="selection-badge">
                                         <i class="fas fa-check"></i>
@@ -140,24 +137,90 @@
                             </div>
                         </div>
                         
-                        <!-- Шаг 2: Выбор дат -->
+                        <!-- Шаг 2: Выбор типа бронирования -->
                         <div class="booking-step" data-step="2">
-                            <h3 class="step-heading">Выберите даты проживания</h3>
+                            <h3 class="step-heading">Выберите тип бронирования</h3>
+                            
+                            <div class="booking-type-selection">
+                                <h4>Тип проживания</h4>
+                                <div class="booking-type-options">
+                                    <div class="booking-type-option" data-type="hourly">
+                                        <i class="fas fa-clock"></i>
+                                        <span>Почасовое</span>
+                                    </div>
+                                    <div class="booking-type-option" data-type="night">
+                                        <i class="fas fa-moon"></i>
+                                        <span>Ночь</span>
+                                    </div>
+                                    <div class="booking-type-option" data-type="daily">
+                                        <i class="fas fa-calendar-day"></i>
+                                        <span>Сутки</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Почасовое бронирование -->
+                            <div class="hours-selection" style="display: none;">
+                                <h4>Выберите количество часов</h4>
+                                <div class="hours-options">
+                                    <div class="hours-option" data-hours="1">1 час</div>
+                                    <div class="hours-option" data-hours="2">2 часа</div>
+                                    <div class="hours-option" data-hours="3">3 часа</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Выбор номера -->
+                            <div class="room-selection">
+                                <h4>Выберите тип номера</h4>
+                                <div class="room-options">
+                                    <div class="room-option" data-room="standard">
+                                        <div class="room-type">Стандарт (STD)</div>
+                                        <div class="room-price" data-hourly="1500" data-night="3000" data-daily="4000">1 500₽/час</div>
+                                    </div>
+                                    <div class="room-option" data-room="delux">
+                                        <div class="room-type">Делюкс (Delux)</div>
+                                        <div class="room-price" data-hourly="1800" data-night="3600" data-daily="4800">1 800₽/час</div>
+                                    </div>
+                                    <div class="room-option" data-room="suite">
+                                        <div class="room-type">Люкс (Suite)</div>
+                                        <div class="room-price" data-hourly="2000" data-night="4200" data-daily="6000">2 000₽/час</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Дополнительные опции -->
+                            <div class="extra-options">
+                                <h4>Дополнительные опции</h4>
+                                <div class="form-group">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" id="third-person">
+                                        <span class="checkmark"></span>
+                                        Третий человек (+1000₽)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Шаг 3: Выбор дат -->
+                        <div class="booking-step" data-step="3">
+                            <h3 class="step-heading">Выберите даты бронирования</h3>
+                            
                             <div class="date-selection">
                                 <div class="date-input">
-                                    <label for="checkin-date">Заезд</label>
+                                    <label for="checkin-date">Дата заезда</label>
                                     <div class="input-wrapper">
-                                        <input type="date" id="checkin-date" class="form-input">
+                                        <input type="text" id="checkin-date" class="form-input datepicker" readonly>
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
                                 </div>
                                 <div class="date-input">
-                                    <label for="checkout-date">Выезд</label>
+                                    <label for="checkout-date">Дата выезда</label>
                                     <div class="input-wrapper">
-                                        <input type="date" id="checkout-date" class="form-input">
+                                        <input type="text" id="checkout-date" class="form-input datepicker" readonly>
                                         <i class="fas fa-calendar-alt"></i>
                                     </div>
                                 </div>
+                                <button type="button" class="btn-clear-dates">Очистить даты</button>
                             </div>
                             
                             <div class="calendar-container">
@@ -183,62 +246,65 @@
                                 </div>
                             </div>
                             
-                            <div class="room-selection">
-                                <h4>Выберите тип номера</h4>
-                                <div class="room-options">
-                                    <div class="room-option" data-room="standard">
-                                        <div class="room-type">Стандарт</div>
-                                        <div class="room-price">3 500₽/ночь</div>
-                                    </div>
-                                    <div class="room-option" data-room="comfort">
-                                        <div class="room-type">Комфорт</div>
-                                        <div class="room-price">4 500₽/ночь</div>
-                                    </div>
-                                    <div class="room-option" data-room="junior-suite">
-                                        <div class="room-type">Полулюкс</div>
-                                        <div class="room-price">6 000₽/ночь</div>
-                                    </div>
+                            <div class="time-selection" id="hourly-time-selection" style="display: none;">
+                                <h4>Выберите время заезда</h4>
+                                <div class="time-options">
+                                    <select id="checkin-hour" class="form-input">
+                                        <option value="10">10:00</option>
+                                        <option value="11">11:00</option>
+                                        <option value="12">12:00</option>
+                                        <option value="13">13:00</option>
+                                        <option value="14">14:00</option>
+                                        <option value="15">15:00</option>
+                                        <option value="16">16:00</option>
+                                        <option value="17">17:00</option>
+                                        <option value="18">18:00</option>
+                                        <option value="19">19:00</option>
+                                        <option value="20">20:00</option>
+                                        <option value="21">21:00</option>
+                                        <option value="22">22:00</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Шаг 3: Подтверждение -->
-                        <div class="booking-step" data-step="3">
+
+                        <!-- Шаг 4: Подтверждение -->
+                        <div class="booking-step" data-step="4">
                             <h3 class="step-heading">Подтверждение бронирования</h3>
                             <div class="booking-summary">
                                 <div class="summary-card">
                                     <div class="summary-image" style="background-image: url('/images/hotel1/1.jpg');"></div>
                                     <div class="summary-details">
-                                        <h4>"У Капитана" на Нагорном бульваре</h4>
+                                        <h4 id="summary-hotel">"У Капитана" на Нагорном бульваре</h4>
                                         <div class="summary-info">
-                                            <div class="info-item">
-                                                <i class="fas fa-calendar-alt"></i>
-                                                <span id="summary-dates">15 мая - 20 мая 2025</span>
-                                            </div>
-                                            <div class="info-item">
-                                                <i class="fas fa-moon"></i>
-                                                <span id="summary-nights">5 ночей</span>
-                                            </div>
                                             <div class="info-item">
                                                 <i class="fas fa-bed"></i>
                                                 <span id="summary-room">Стандарт</span>
+                                            </div>
+                                            <div class="info-item">
+                                                <i class="fas fa-clock"></i>
+                                                <span id="summary-period">1 час</span>
+                                            </div>
+                                            <div class="info-item" id="summary-third-person" style="display: none;">
+                                                <i class="fas fa-user-plus"></i>
+                                                <span>Третий человек</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <div class="price-summary">
-                                    <div class="price-item">
-                                        <span>5 ночей × 3 500₽</span>
-                                        <span>17 500₽</span>
+                                    <div class="price-item base-price">
+                                        <span id="price-description">1 час × 1 500₽</span>
+                                        <span id="base-price">1 500₽</span>
                                     </div>
-                                    <div class="price-item discount">
-                                        <span>Скидка 10%</span>
-                                        <span>-1 750₽</span>
+                                    <div class="price-item extra-price" id="third-person-price" style="display: none;">
+                                        <span>Третий человек</span>
+                                        <span>+1 000₽</span>
                                     </div>
                                     <div class="price-item total">
                                         <span>Итого</span>
-                                        <span id="summary-total">15 750₽</span>
+                                        <span id="summary-total">1 500₽</span>
                                     </div>
                                 </div>
                                 
@@ -284,8 +350,8 @@
                                     <i class="fas fa-check-circle"></i>
                                 </div>
                                 <div class="benefit-text">
-                                    <strong>Бесплатная отмена</strong>
-                                    <span>Отмена без штрафа за 48 часов</span>
+                                    <strong>Гибкие тарифы</strong>
+                                    <span>Почасовая оплата, ночь или полные сутки</span>
                                 </div>
                             </li>
                             <li>
@@ -293,8 +359,8 @@
                                     <i class="fas fa-check-circle"></i>
                                 </div>
                                 <div class="benefit-text">
-                                    <strong>Лучшая цена</strong>
-                                    <span>Гарантия лучшей цены при бронировании на сайте</span>
+                                    <strong>Прозрачные цены</strong>
+                                    <span>Все цены указаны заранее</span>
                                 </div>
                             </li>
                             <li>
@@ -302,33 +368,24 @@
                                     <i class="fas fa-check-circle"></i>
                                 </div>
                                 <div class="benefit-text">
-                                    <strong>Без предоплаты</strong>
-                                    <span>Оплата при заселении</span>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="benefit-icon">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                <div class="benefit-text">
-                                    <strong>Бонусная программа</strong>
-                                    <span>10% скидка при бронировании от 3 ночей</span>
+                                    <strong>Быстрое заселение</strong>
+                                    <span>Минимальное время ожидания</span>
                                 </div>
                             </li>
                         </ul>
-                        
-                        <div class="special-offer">
-                            <div class="offer-badge">Спецпредложение</div>
-                            <h4>Забронируйте от 3 ночей и получите скидку 10%!</h4>
-                            <p>Действует на все типы номеров при бронировании через сайт.</p>
-                            <div class="offer-timer">
-                                <div class="timer-icon">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="timer-text">
-                                    <span>Предложение действует еще:</span>
-                                    <strong id="offer-timer">12:34:56</strong>
-                                </div>
+                    </div>
+                    
+                    <div class="special-offer">
+                        <div class="offer-badge">Правила</div>
+                        <h4>Условия бронирования</h4>
+                        <p>При бронировании от 4 часов - оплата по тарифу суток</p>
+                        <div class="offer-timer">
+                            <div class="timer-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="timer-text">
+                                <span>Круглосуточная работа</span>
+                                <strong>Без выходных</strong>
                             </div>
                         </div>
                     </div>
