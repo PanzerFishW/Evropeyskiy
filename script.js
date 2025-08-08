@@ -958,8 +958,8 @@ function initGallery() {
             address: "г. Москва, Нагорный бульвар, д. 19, корпус 1",
             description: "Современный отель с комфортабельными номерами и высоким уровнем сервиса. Идеальное расположение в шаговой доступности от метро.",
             images: [
-                'images/hotel1/1.jpg', 'images/hotel1/2.jpg', 'images/hotel1/3.jpg',
-                'images/hotel1/4.jpg', 'images/hotel1/5.jpg', 'images/hotel1/6.jpg'
+                'images/hotel1/1.JPG', 'images/hotel1/2.JPG', 'images/hotel1/3.JPG',
+                'images/hotel1/4.JPG', 'images/hotel1/5.JPG', 'images/hotel1/6.JPG'
             ]
         },
         "sevastopol": {
@@ -967,8 +967,8 @@ function initGallery() {
             address: "г. Москва, Севастопольский пр-т, д. 28, корпус 8",
             description: "Элегантный отель с просторными номерами и панорамными видами. Удобная транспортная развязка и бесплатная парковка для гостей.",
             images: [
-                'images/hotel2/1.jpg', 'images/hotel2/2.jpg', 'images/hotel2/3.jpg',
-                'images/hotel2/4.jpg', 'images/hotel2/5.jpg', 'images/hotel2/6.jpg'
+                'images/hotel2/1.JPG', 'images/hotel2/2.JPG', 'images/hotel2/3.JPG',
+                'images/hotel2/4.JPG', 'images/hotel2/5.JPG', 'images/hotel2/6.JPG'
             ]
         }
     };
