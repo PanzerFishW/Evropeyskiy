@@ -156,51 +156,6 @@ function loadGalleryImages() {
     }
 }
 
-// Управление акциями
-function initPromotionsManager() {
-    const addBtn = document.querySelector('.btn-add-promotion');
-    const promotionsList = document.getElementById('promotions-list');
-    
-    if (addBtn) {
-        addBtn.addEventListener('click', function() {
-            const promotionId = Date.now();
-            
-            const promotionCard = document.createElement('div');
-            promotionCard.className = 'promotion-card';
-            promotionCard.innerHTML = `
-                <div class="form-group">
-                    <label>Название акции</label>
-                    <input type="text" class="form-control" placeholder="Название">
-                </div>
-                <div class="form-group">
-                    <label>Описание</label>
-                    <textarea class="form-control" rows="3" placeholder="Описание"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Дата начала</label>
-                    <input type="date" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Дата окончания</label>
-                    <input type="date" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Изображение</label>
-                    <input type="file" class="form-control" accept="image/*">
-                </div>
-                <div class="promotion-actions">
-                    <button class="btn-save-promotion">Сохранить</button>
-                    <button class="btn-delete-promotion" data-id="${promotionId}">Удалить</button>
-                </div>
-            `;
-            
-            promotionsList.appendChild(promotionCard);
-        });
-    }
-    
-    // Загрузка существующих акций (заглушка)
-    loadPromotions();
-}
 
 function loadPromotions() {
     // В реальном проекте здесь будет запрос к серверу
@@ -265,25 +220,24 @@ function initPricesManager() {
         });
     }
 }
-// Обновленная функция для работы с акциями
 function savePromotion(promotionId) {
     const promotionCard = document.querySelector(`.promotion-card[data-id="${promotionId}"]`);
     const title = promotionCard.querySelector('input[type="text"]').value;
     const description = promotionCard.querySelector('textarea').value;
     const startDate = promotionCard.querySelector('input[type="date"]:first-of-type').value;
     const endDate = promotionCard.querySelector('input[type="date"]:last-of-type').value;
-    
+
     const data = {
         title,
         description,
         start_date: startDate,
         end_date: endDate
     };
-    
+
     if (promotionId !== 'new') {
         data.id = promotionId;
     }
-    
+
     fetch('promotions.php', {
         method: 'POST',
         headers: {
@@ -291,15 +245,16 @@ function savePromotion(promotionId) {
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) throw new Error('Network error');
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
-            alert('Акция успешно сохранена');
-            if (promotionId === 'new') {
-                loadPromotions();
-            }
+            alert('Акция сохранена!');
+            loadPromotions(); // Обновляем список
         } else {
-            alert('Ошибка при сохранении акции');
+            alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
         }
     })
     .catch(error => {
