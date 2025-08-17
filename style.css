@@ -3382,3 +3382,134 @@ section {
     }
 }
 /* Обновленные стили для мобильного меню */
+
+
+/* ==================== СЕКЦИЯ АКЦИЙ ==================== */
+#promotions {
+    background: linear-gradient(to bottom, var(--gray-800) 0%, var(--gray-900) 100%);
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(59, 130, 246, 0.1);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.promotions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.promotion-card {
+    background: var(--gray-700);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s ease;
+    position: relative;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.promotion-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(37, 99, 235, 0.3);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.promotion-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 3;
+}
+
+.promotion-badge {
+    background: var(--blue-600);
+    color: white;
+}
+
+.promotion-badge[data-type="hit"] {
+    background: #DC143C;
+}
+
+.promotion-badge[data-type="new"] {
+    background: #f59e0b;
+}
+
+.promotion-image {
+    height: 250px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.promotion-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(30, 41, 59, 0.9) 0%, rgba(30, 41, 59, 0.4) 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: 25px;
+}
+
+.promotion-content {
+    width: 100%;
+}
+
+.promotion-content h3 {
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.promotion-content p {
+    color: var(--blue-300);
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.promotion-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: var(--gray-300);
+}
+
+.promotion-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.promotion-meta i {
+    color: var(--blue-400);
+}
+
+.promotion-details {
+    padding: 25px;
+}
+
+.promotion-details p {
+    color: var(--gray-300);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .promotions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .promotion-image {
+        height: 200px;
+    }
+}
