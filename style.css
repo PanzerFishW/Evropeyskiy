@@ -3302,3 +3302,70 @@ section {
     }
 }
 
+/* Обновленные стили для шапки на мобильных устройствах */
+@media (max-width: 768px) {
+    .header {
+        padding: 10px 0;
+    }
+    
+    .logo {
+        gap: 8px;
+    }
+    
+    .logo-img {
+        height: 36px; /* Уменьшаем высоту логотипа */
+        width: auto;
+    }
+    
+    .logo-text span:first-child {
+        font-size: 0.8rem; /* Уменьшаем текст "Мини отель" */
+    }
+    
+    .logo-text span:last-child {
+        font-size: 1rem; /* Уменьшаем текст "У Капитана" */
+        letter-spacing: 0.3px;
+    }
+    
+    .mobile-menu-btn {
+        font-size: 1.3rem; /* Немного уменьшаем иконку меню */
+        padding: 8px;
+        background: rgba(59, 130, 246, 0.2);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-btn:hover {
+        background: rgba(59, 130, 246, 0.3);
+        transform: scale(1.1);
+    }
+    
+    .header .container {
+        padding: 0 15px; /* Уменьшаем боковые отступы */
+    }
+}
+
+/* Дополнительные улучшения для очень маленьких экранов */
+@media (max-width: 480px) {
+    .logo-text span:first-child {
+        display: none; /* Скрываем "Мини отель" на очень маленьких экранах */
+    }
+    
+    .logo-text span:last-child {
+        font-size: 0.9rem;
+    }
+    
+    .logo-img {
+        height: 32px;
+    }
+    
+    .mobile-menu-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+}
