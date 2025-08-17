@@ -1367,3 +1367,22 @@ document.addEventListener('DOMContentLoaded', () => {
     initCertificates();
     // ... остальной код инициализации ...
 });
+
+// Обработчик мобильного меню
+document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+    document.querySelector('.nav-mobile').classList.add('active');
+    document.body.style.overflow = 'hidden'; // Блокируем прокрутку страницы
+});
+
+document.querySelector('.close-menu-btn').addEventListener('click', function() {
+    document.querySelector('.nav-mobile').classList.remove('active');
+    document.body.style.overflow = ''; // Восстанавливаем прокрутку
+});
+
+// Закрытие меню при клике на ссылку
+document.querySelectorAll('.nav-mobile-links a').forEach(link => {
+    link.addEventListener('click', function() {
+        document.querySelector('.nav-mobile').classList.remove('active');
+        document.body.style.overflow = '';
+    });
+});

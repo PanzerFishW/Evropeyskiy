@@ -3369,3 +3369,101 @@ section {
         font-size: 1.2rem;
     }
 }
+/* Обновленные стили для мобильного меню */
+@media (max-width: 768px) {
+    /* Уменьшаем кнопку "Забронировать" в шапке */
+    .nav .btn {
+        display: none; /* Скрываем кнопку в основном меню */
+    }
+    
+    /* Стили для мобильного меню (открывается справа) */
+    .nav-mobile {
+        left: auto;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        transform: translateX(0);
+        background: var(--gray-800);
+        border-left: 1px solid rgba(59, 130, 246, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 80px 20px 20px;
+        align-items: flex-start;
+        justify-content: flex-start;
+        transition: right 0.3s ease;
+    }
+    
+    .nav-mobile.active {
+        right: 0;
+    }
+    
+    /* Кнопка "Забронировать" в мобильном меню */
+    .nav-mobile-links .btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        margin-top: 15px;
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Стили для ссылок в мобильном меню */
+    .nav-mobile-links {
+        width: 100%;
+        max-width: none;
+        gap: 10px;
+    }
+    
+    .nav-mobile-links a {
+        padding: 12px 15px;
+        text-align: left;
+        border-radius: 6px;
+        font-size: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .nav-mobile-links a:hover {
+        background: rgba(59, 130, 246, 0.2);
+    }
+    
+    /* Кнопка закрытия меню */
+    .close-menu-btn {
+        top: 15px;
+        right: 15px;
+        font-size: 1.5rem;
+        background: rgba(59, 130, 246, 0.2);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Кнопка бургер-меню */
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(59, 130, 246, 0.2);
+        border-radius: 6px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-btn:hover {
+        background: rgba(59, 130, 246, 0.3);
+    }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 480px) {
+    .nav-mobile {
+        width: 250px;
+    }
+    
+    .nav-mobile-links a {
+        font-size: 0.9rem;
+        padding: 10px 12px;
+    }
+}
