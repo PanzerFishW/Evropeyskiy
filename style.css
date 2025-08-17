@@ -265,52 +265,64 @@ section {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(26, 26, 26, 0.98);
-    backdrop-filter: blur(10px);
+    background: white;
     z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    padding: 20px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transform: translateY(-100%);
-    opacity: 0;
-    transition: all 0.5s ease;
-    padding: 80px 20px 40px;
+    overflow-y: auto;
 }
 
 .nav-mobile.active {
-    transform: translateY(0);
-    opacity: 1;
+    transform: translateX(0);
+}
+
+.mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.close-menu-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
 }
 
 .nav-mobile-links {
     display: flex;
     flex-direction: column;
-    gap: 25px;
-    text-align: center;
-    width: 100%;
-    max-width: 300px;
+    gap: 15px;
 }
 
 .nav-mobile-links a {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: var(--white);
-    padding: 12px 20px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.nav-mobile-links a:hover {
-    background: rgba(59, 130, 246, 0.2);
-    color: var(--blue-400);
+    padding: 12px 0;
+    font-size: 18px;
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
 }
 
 .nav-mobile-links .btn {
     margin-top: 20px;
     text-align: center;
 }
+
+@media (min-width: 769px) {
+    .nav-mobile {
+        display: none;
+    }
+    .mobile-menu-btn {
+        display: none;
+    }
+}
+
 
 .close-menu-btn {
     position: absolute;
@@ -3370,100 +3382,3 @@ section {
     }
 }
 /* Обновленные стили для мобильного меню */
-@media (max-width: 768px) {
-    /* Уменьшаем кнопку "Забронировать" в шапке */
-    .nav .btn {
-        display: none; /* Скрываем кнопку в основном меню */
-    }
-    
-    /* Стили для мобильного меню (открывается справа) */
-    .nav-mobile {
-        left: auto;
-        right: -100%;
-        width: 280px;
-        height: 100vh;
-        transform: translateX(0);
-        background: var(--gray-800);
-        border-left: 1px solid rgba(59, 130, 246, 0.2);
-        backdrop-filter: blur(10px);
-        padding: 80px 20px 20px;
-        align-items: flex-start;
-        justify-content: flex-start;
-        transition: right 0.3s ease;
-    }
-    
-    .nav-mobile.active {
-        right: 0;
-    }
-    
-    /* Кнопка "Забронировать" в мобильном меню */
-    .nav-mobile-links .btn {
-        padding: 10px 15px;
-        font-size: 0.9rem;
-        margin-top: 15px;
-        width: 100%;
-        text-align: center;
-    }
-    
-    /* Стили для ссылок в мобильном меню */
-    .nav-mobile-links {
-        width: 100%;
-        max-width: none;
-        gap: 10px;
-    }
-    
-    .nav-mobile-links a {
-        padding: 12px 15px;
-        text-align: left;
-        border-radius: 6px;
-        font-size: 1rem;
-        background: rgba(255, 255, 255, 0.05);
-    }
-    
-    .nav-mobile-links a:hover {
-        background: rgba(59, 130, 246, 0.2);
-    }
-    
-    /* Кнопка закрытия меню */
-    .close-menu-btn {
-        top: 15px;
-        right: 15px;
-        font-size: 1.5rem;
-        background: rgba(59, 130, 246, 0.2);
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    /* Кнопка бургер-меню */
-    .mobile-menu-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(59, 130, 246, 0.2);
-        border-radius: 6px;
-        width: 40px;
-        height: 40px;
-        font-size: 1.2rem;
-        transition: all 0.3s ease;
-    }
-    
-    .mobile-menu-btn:hover {
-        background: rgba(59, 130, 246, 0.3);
-    }
-}
-
-/* Для очень маленьких экранов */
-@media (max-width: 480px) {
-    .nav-mobile {
-        width: 250px;
-    }
-    
-    .nav-mobile-links a {
-        font-size: 0.9rem;
-        padding: 10px 12px;
-    }
-}

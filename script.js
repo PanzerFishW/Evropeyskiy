@@ -1280,11 +1280,13 @@ document.addEventListener('DOMContentLoaded', () => {
     initInteractiveContacts();
 });
 
-// Инициализация мобильного меню
+// Обработчик мобильного меню
 function initMobileMenu() {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const closeMenuBtn = document.querySelector('.close-menu-btn');
     const mobileMenu = document.querySelector('.nav-mobile');
+    
+    if (!mobileMenuBtn || !mobileMenu) return;
     
     mobileMenuBtn.addEventListener('click', function() {
         mobileMenu.classList.add('active');
@@ -1304,19 +1306,11 @@ function initMobileMenu() {
             document.body.style.overflow = '';
         });
     });
-    
-    // Адаптация индикатора навигации для мобильных устройств
-    if (window.innerWidth <= 768) {
-        const navIndicator = document.querySelector('.nav-indicator');
-        if (navIndicator) navIndicator.style.display = 'none';
-    }
 }
 
-// Добавьте вызов функции в DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-    initMobileMenu();
-    // ... остальной код инициализации ...
-});
+document.addEventListener('DOMContentLoaded', initMobileMenu);
+
+
 
 // Инициализация сертификатов
 function initCertificates() {
